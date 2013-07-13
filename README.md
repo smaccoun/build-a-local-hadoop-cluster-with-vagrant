@@ -67,14 +67,34 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-Most of this is pretty self explanatory. If Vagrant can't find the lucid64 base box, it downloads it. You may want to setup
+Most of this is pretty self-explanatory. If Vagrant can't find the lucid64 base box, it downloads it. You may want to set up
 the memory for each server to be more or less depending on how much memory you have available on your computer.
 After the base box is added, four servers - 1 master and 3 data (slave) nodes - are spun up. Of course, if you are on Wifi
-and internet DHCP server is already using the IP address range, you have to change to a different range.
+and internet DHCP server is already using the IP address range, you'll have to change to a different range.
 
 Once the Vagrant file is complete, simply type
 
 `$ vagrant up`
 
 And you've got yourself a basic cluster!
+
+## Adding Hadoop Configurations
+
+So now we have a cluster, but none of the nodes in this cluster are set up to run hadoop. This is where the powerful 
+provisioning of Puppet comes in.
+
+First, let's think about the essential files and software we need for Hadoop:
+
+Software
+* openjdk-6
+* 
+Config Files
+* core-site.xml
+* hadoop-env.sh
+* hdfs-site.xml
+* mapred-site.xml
+* masters
+* slaves
+
+Let's start by just getting Puppet to add openjdk-6 to each machine. 
 
