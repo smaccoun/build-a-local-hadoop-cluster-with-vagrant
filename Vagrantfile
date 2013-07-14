@@ -7,6 +7,11 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--memory", "256"]
   end
 
+  config.vm.provision :puppet do |puppet|
+     puppet.manifests_path = "manifests"
+     puppet.manifest_file  = "base-hadoop.pp"
+  end
+
   config.vm.define :hadoop1 do |hadoop1_config|
     hadoop1_config.vm.network :private_network, ip: "192.168.2.11"
     hadoop1_config.vm.hostname = "hadoop1"
