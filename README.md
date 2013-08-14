@@ -133,6 +133,7 @@ to run Puppet on startup. To do this, add the following lines to your Vagrantfil
 config.vm.provision :puppet do |puppet|
      puppet.manifests_path = "manifests"
      puppet.manifest_file  = "base-hadoop.pp"
+     puppet.module_path = "modules"
 end
 
 ...
@@ -141,3 +142,113 @@ end
 
 Now run `$ Vagrant reload` and java6 will be installed on all of your VM's. This may take a bit of time the first time around,
 but because Vagrant is idempotent this will be the last time it will have to install java on all machines!
+
+####Configuring SSH
+
+Hadoop will use SSH to have VMs to communicate with one another. In order to prevent password prompts when loggin in,
+we must store the public rsa keys in each vm.
+
+First, generate an example key on your host machine:
+`$: ssh-keygen -t rsa`
+
+Then create a puppet module which will configure all VMs to store info on this public key. Create a modules directory
+where we will put the rest of our puppet VMs, and then add an rsa module to it.
+
+```
+$: mkdir -p modules/rsa
+$: cd modules/rsa
+$: mkdir manifests files
+```
+
+Then create the initialization file (init.pp) for this module. The RSA key should be the one you just generated.
+
+```
+$: vim manifests/init.pp
+
+#init.pp
+
+class rsa {
+
+file { "/root/.ssh":
+   ensure => "directory",
+   owner => "root",
+   group => "root",
+   mode => 600,
+}
+
+
+file {
+  "/root/.ssh/id_rsa":
+  source => "puppet:///modules/hadoop/id_rsa",
+  mode => 600,
+  owner => root,
+  group => root,
+  require => Exec['apt-get update']
+ }
+ 
+file {
+  "/root/.ssh/id_rsa.pub":
+  source => "puppet:///modules/hadoop/id_rsa.pub",
+  mode => 600,
+  owner => root,
+  group => root,
+  require => Exec['apt-get update']
+ }
+
+ssh_authorized_key { "ssh_key":
+    ensure => "present",
+    key    => "AAAAB3NzaC1yc2EAAAADAQABAAABAQDSmQKEUmUHeIWeNl6wac8mnH5iy36XVECoEp+VqVfANeX4SPQMFQb2f+LgBmodW+lKqvo8aO+kk1mWYSuU745n8g0xszAq46IlHtUxyz7pRJTO46Ut2PDEvAabSIP/CaGbKZ9+SajkE+fny/VUu10ke9KCiNw/8qW8OT52bqwq4lqKeyH4Rj7dhQfT20g8V9d0Sv9szozt+EVLjaF/2TcNGoHwGs8aSNQ0m/HtAUPZzrZO5J4LnVV+KwYnT0htyJGyHPwSuaMVbbNptIrblHMxLAsatZsQvi7wlJlPpH2zBTDjkODvRu3drbQ8UtQynYac8nTfVICp/TDa0JRHO4tf",
+    type   => "ssh-rsa",
+    user   => "root",
+    require => File['/root/.ssh/id_rsa.pub']
+}
+ 
+}
+
+```
+
+And in the files folder, add your `id_rsa` and `id_rsa.pub` files that you just generated. Here are mine:
+
+*id_rsa*
+```
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEA0pkChFJlB3iFnjZesGnPJpx+Yst+l1RAqBKflalXwDXl+Ej0
+DBUG9n/i4AZqHVvpSqr6PGjvpJNZlmErlO+OZ/INMbMwKuOiJR7VMcs+6USUzuOl
+LdjwxLwGm0iD/wmhmymffkmo5BPn58v1VLtdJHvSgojcP/KlvDk+dm6sKuJainsh
++EY+3YUH09tIPFfXdEr/bM6M7fhFS42hf9k3DRqB8BrPGkjUNJvx7QFD2c62TuSe
+C51VfisGJ09IbciRshz8ErmjFW2zabSK25RzMSwLGrWbEL4u8JSZT6R9swUw45Dg
+70bt3a20PFLUMp2GnPJ031SAqf0w2tCURzuLXwIDAQABAoIBABK6UKL7wMg9S4Sa
+SSle/3DrkcGvXv6OG4HWxiJFAOyy3lSKCEnaxNe+36oUZ/NcbQ6azc35dvYntFvP
+IFUKSJutxsaYrLvjqlOqvkLDVEDiPGl5jQLau+6C2gONG0/ex2RI+0n7uu0tZ/4R
+ASwbzVilOj8pdIyrQ1nNrWRSyzS06wMnGQTsI8agT+V6/sVXUnMNGZZprp8Hp5Ph
+JJfl7P8GeI4t+tEoM0ty28E+ZnAjUx416DC8LNQZhQkOlfCX7IRUMnxF1R1u4nhZ
+y94wRLuPY4gkxNGkxeSp0VV053UMaqGkJjxfQnTQBLhmTqHY0aQn2n1dFcIvGRnX
+eDQzxyECgYEA9c6yGLPKQfAYwNs6+K5GbkFALCAwnE9jCSmU+YEkYoqmG+N2VKmT
+shXt3JACQrhDZTZrIhlwoEc4OXrLUkQ6hKFoqRLPFAIC0iI5N8IPRkPQHGiigtBp
+SSoviR7p/LPOWAx5qG9VbaUVOUbrPSnfwPyO0Bz7Zv9hrUTk7/kyyRMCgYEA21SN
+/gWIFLOc1hc/T7dEMs2BZa6EEOrp/DJ0rqA+MONKbIWXQbnX5xlQd+2uXthfxmXq
+LitDIRWjJ+0w5dui6TXsEwXgTp/69gu7GGpWfFpKOerQSP2riiuc2WcZKv39Z/K6
+zloZ9tFZVd3nMXiDSQKKtZLARtq2bZTXWJdNqgUCgYB7/FtnDGEL63CA7tQLFdTe
+zjjxSPdcEMsSlw/W3mYc8nShApXwVGz0Wg1VwKnzP4B3MADP/WcK4YGhtKeUAmhF
++CiTh7I+FFmZ5rtXvaH4vkHd4oV+WGOTDR1XG+nIlmWRkhFXfXjoymkvL+9+NX3w
+mTPsE4JXzJ9XR7X2uYr9UwKBgQDOVqrKurt99kfrJa27Ogef37QHS/oUzFvalkEt
+c7VuWrZOiBN3kvXqBOeuG936focD6Cc6zhp2SpvW2Q8yf8GwsrjoYJPYhCseRIT8
+gDXjATJpcF4I/RTfhQ4nfRWxW4eFvlY+AYgBqovn+z4gTWb9TbXfAjN/tQ0A5JD/
+WECJXQKBgDeE6UamNYkgGQkk7HYbjLMl6E7x+EJ5G+70dcm1i79kgjYJVW9GoaSD
+/Slbx1BZkOqukbY8iqbj+QiBl+SZ8Pt5uQdf7SIRpkY3yrCiJHiL4cdbY6n6tuiv
+j8yNhiTUxwn3ZPz8KvuCLpptai3Hn0P1cEV5vua//d12Fc1NEnjj
+-----END RSA PRIVATE KEY-----
+```
+
+*id_rsa.pub*
+```
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSmQKEUmUHeIWeNl6wac8mnH5iy36XVECoEp+VqVfANeX4SPQMFQb2f+LgBmodW+lKqvo8aO+kk1mWYSuU745n8g0xszAq46IlHtUxyz7pRJTO46Ut2PDEvAabSIP/CaGbKZ9+SajkE+fny/VUu10ke9KCiNw/8qW8OT52bqwq4lqKeyH4Rj7dhQfT20g8V9d0Sv9szozt+EVLjaF/2TcNGoHwGs8aSNQ0m/HtAUPZzrZO5J4LnVV+KwYnT0htyJGyHPwSuaMVbbNptIrblHMxLAsatZsQvi7wlJlPpH2zBTDjkODvRu3drbQ8UtQynYac8nTfVICp/TDa0JRHO4tf
+```
+
+If you run vagrant up, you should now be able to communicate with all of your VM's using SSH without having to type
+passwords!
+
+
+
+
+
