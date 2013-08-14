@@ -1,3 +1,5 @@
+include rsa
+
 group { "puppet":
   ensure => "present",
 }

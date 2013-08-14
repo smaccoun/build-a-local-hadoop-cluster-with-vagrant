@@ -10,6 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :puppet do |puppet|
      puppet.manifests_path = "manifests"
      puppet.manifest_file  = "base-hadoop.pp"
+     puppet.module_path = "modules"
   end
 
   config.vm.define :hadoop1 do |hadoop1_config|
