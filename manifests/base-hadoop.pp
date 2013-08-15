@@ -1,4 +1,5 @@
 include rsa
+include hadoop
 
 group { "puppet":
   ensure => "present",
