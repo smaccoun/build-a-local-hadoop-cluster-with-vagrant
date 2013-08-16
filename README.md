@@ -22,6 +22,10 @@ This is the first of a series of tutorials. This one gives you an introduction t
 show some of the key configuration files necessary for hadoop. If all you want is to run vagrant on your own machine,
 just clone the repo and run the commands above to get on your way!
 
+Note that the first time you run this it will probably take a significant amount of time to download the base box 
+and all other necessary files. Fortunately, Vagrant is idempotent so all future `vagrant up` commands will go quite 
+quickly, and spawning up a new cluster is a matter of a couple of minutes.
+
 Feel free to fork and suggest improvements. This tutorial is still a work in progress. Future tutorials will
 include basic MapReduce processes with Java, and eventually Hive and Pig too!
 
