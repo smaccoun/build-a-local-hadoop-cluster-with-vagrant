@@ -248,7 +248,62 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSmQKEUmUHeIWeNl6wac8mnH5iy36XVECoEp+VqVfA
 If you run vagrant up, you should now be able to communicate with all of your VM's using SSH without having to type
 passwords!
 
+###Add Hadoop Config Files
 
+Let's now add all the basic hadoop files you need to get basic hadoop up and running.
 
+**core-site.xml**
+Let's use the basic version of this file:
+
+```
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+ <configuration>
+  <property>
+   <name>fs.default.name</name>
+   <value>hdfs://192.168.2.10:9000</value>
+   <description>The name of the default file system. A URI whose scheme and authority determine the FileSystem implementation.</description>
+  </property>
+ </configuration>
+```
+ 
+**hadoop-env.sh**
+The only line we need to set for our basic setup is our JAVA_HOME variable.
+
+```
+...
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk
+...
+```
+
+**mapred-site.xml**
+Where our job tracker runs. Hadoop runs the job tracker on the master node (NameNode)
+
+```
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+ <property>
+  <name>mapred.job.tracker</name>
+  <value>192.168.2.10:9001</value>
+  <description>The host and port that the MapReduce job tracker runs at.</description>
+ </property>
+</configuration>
+```
+
+And finally we will create our master and slave files that tell hadoop which machines are the data nodes and which is
+the name node:
+
+**masters**
+```
+192.168.2.10
+```
+
+**slaves**
+```
+192.168.2.11
+192.168.2.12
+192.168.2.13
+```
 
 
