@@ -29,6 +29,15 @@ quickly, and spawning up a new cluster is a matter of a couple of minutes.
 Feel free to fork and suggest improvements. This tutorial is still a work in progress. Future tutorials will
 include basic MapReduce processes with Java, and eventually Hive and Pig too!
 
+If at any point you want to close your machines or shut them down just type
+```
+#From host, halt machines
+$: vagrant halt
+
+#From host, destroy all machines. Can be reclaimed with vagrant up
+$: vagrant up
+```
+
 ## Why this tutorial exists
 
 What is hadoop? Hadoop is a framework for handling big data. Data that is so big that usually one machine can't support it.
@@ -38,7 +47,9 @@ Hadoop therefore makes use of *multiple* machines to handle and process all of t
 
 Well, one option might be to rent out some EC2 instances or some other 3rd party servers. But all of
 those usually cost some money, and you don't have quite the power to inspect hadoop's internals as if they were all
-on your own machine.
+on your own machine. Another option is to run Hadoop in pseudo-distributed mode, but this doesn't allow you to see hadoop
+truly working with multiple nodes - as it would in any industrial implementation - and so you don't get to see
+it's key parallel processing capabilities.
 
 The solution is to simulate several servers on your own machine using virtual machines. For each of those VMs, you'll have
 to set them up to be configured for hadoop. Sounds like a lot of work, right?
