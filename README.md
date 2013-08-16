@@ -3,6 +3,28 @@ Tutorial
 
 > Note: This tutorial is based off of http://cscarioni.blogspot.co.uk/2012/09/setting-up-hadoop-virtual-cluster-with.html
 
+Using only 1 command, you can get a full hadoop cluster running on your own machine!
+
+```
+$: cd /tmp
+$: git clone https://github.com/smaccoun/build-a-local-hadoop-cluster-with-vagrant.git
+$: cd build-a-local-hadoop-cluster-with-vagrant/
+$: vagrant up
+
+# Now log in and start hadoop
+$: vagrant ssh master
+$: sudo su -
+$: cd /opt/hadoop-1.1.2
+$: ./bin/start-all.sh
+```
+
+This is the first of a series of tutorials. This one gives you an introduction to vagrant and puppet, as well as
+show some of the key configuration files necessary for hadoop. If all you want is to run vagrant on your own machine,
+just clone the repo and run the commands above to get on your way!
+
+Feel free to fork and suggest improvements. This tutorial is still a work in progress. Future tutorials will
+include basic MapReduce processes with Java, and eventually Hive and Pig too!
+
 ## Why this tutorial exists
 
 What is hadoop? Hadoop is a framework for handling big data. Data that is so big that usually one machine can't support it.
@@ -305,5 +327,25 @@ the name node:
 192.168.2.12
 192.168.2.13
 ```
+
+### Test it out!
+
+Using only 1 command, you can get a full hadoop cluster running on your own machine!
+
+```
+$: cd /tmp
+$: git clone https://github.com/smaccoun/build-a-local-hadoop-cluster-with-vagrant.git
+$: cd build-a-local-hadoop-cluster-with-vagrant/
+$: vagrant up
+
+# Now log in and start hadoop
+$: vagrant ssh master
+$: sudo su -
+$: cd /opt/hadoop-1.1.2
+$: ./bin/start-all.sh
+```
+
+If you want to ssh into any other nodes to see their workings, just use `vagrant ssh hadoop<#>`.
+Future tutorial will go more in depth from here. Stay tuned.
 
 
