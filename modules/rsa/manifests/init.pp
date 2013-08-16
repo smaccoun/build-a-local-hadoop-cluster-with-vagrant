@@ -10,7 +10,7 @@ file { "/root/.ssh":
 
 file {
   "/root/.ssh/id_rsa":
-  source => "puppet:///modules/hadoop/id_rsa",
+  source => "puppet:///modules/rsa/id_rsa",
   mode => 600,
   owner => root,
   group => root,
@@ -19,7 +19,7 @@ file {
  
 file {
   "/root/.ssh/id_rsa.pub":
-  source => "puppet:///modules/hadoop/id_rsa.pub",
+  source => "puppet:///modules/rsa/id_rsa.pub",
   mode => 600,
   owner => root,
   group => root,
