@@ -186,14 +186,21 @@ $: cd modules/rsa
 $: mkdir manifests files
 ```
 
-Then create the initialization file (init.pp) for this module. The RSA key should be the one you just generated.
+Create the initialization file (init.pp) for this module. The RSA key should be the one you just generated.
+StrictHostKeyChecking has to be set to no in order to allow for seamless ssh communication with Hadoop.
+Make sure to copy the `/etc/ssh/ssh_config` into `modules/rsa/files`.
 
 ```
 $: vim manifests/init.pp
 
-#init.pp
-
 class rsa {
+
+file { "/etc/ssh/ssh_config":
+   source => "puppet:///modules/rsa/ssh_config",
+   owner => "root",
+   group => "root",
+   mode => 600
+}
 
 file { "/root/.ssh":
    ensure => "directory",
@@ -205,7 +212,7 @@ file { "/root/.ssh":
 
 file {
   "/root/.ssh/id_rsa":
-  source => "puppet:///modules/hadoop/id_rsa",
+  source => "puppet:///modules/rsa/id_rsa",
   mode => 600,
   owner => root,
   group => root,
@@ -214,7 +221,7 @@ file {
  
 file {
   "/root/.ssh/id_rsa.pub":
-  source => "puppet:///modules/hadoop/id_rsa.pub",
+  source => "puppet:///modules/rsa/id_rsa.pub",
   mode => 600,
   owner => root,
   group => root,
@@ -230,6 +237,7 @@ ssh_authorized_key { "ssh_key":
 }
  
 }
+
 
 ```
 
