@@ -1,5 +1,12 @@
 class rsa {
 
+file { "/etc/ssh/ssh_config":
+   source => "puppet:///modules/rsa/ssh_config",
+   owner => "root",
+   group => "root",
+   mode => 600
+}
+
 file { "/root/.ssh":
    ensure => "directory",
    owner => "root",
