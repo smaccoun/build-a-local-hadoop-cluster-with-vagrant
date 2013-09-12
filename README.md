@@ -63,9 +63,9 @@ With Vagrant you create a file called a Vagrantfile which specifies your server 
 
 `$ touch Vagrantfile`
 
-With hadoop you will store all of your data on what are called **data nodes**. When you want to store your data, hadoop
+With hadoop, you will store all of your data on what are called **data nodes**. When you want to store your data, hadoop
 will first split this data up into smaller chunks called *blocks*, and these blocks will be divided up amongst the data
-nodes. A *master node* will then keep track of where these blocks are, along with other meta information about the data.
+nodes. A **name node** (the *master* of the *slaves*) will then keep track of where these blocks are, along with other meta information about the data.
 For this tutorial, we will create 3 data nodes and 1 master node. Lets first just get some basic VMs up and running without
 worrying about the hadoop configuration.
 
