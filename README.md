@@ -14,7 +14,7 @@ $: vagrant up
 # Now log in and start hadoop
 $: vagrant ssh master
 $: sudo su -
-$: cd /opt/hadoop-1.1.2
+$: cd /opt/hadoop-2.2.0
 $: ./bin/start-all.sh
 ```
 
@@ -364,7 +364,7 @@ $: vagrant up
 # Now log in and start hadoop
 $: vagrant ssh master
 $: sudo su -
-$: cd /opt/hadoop-1.1.2
+$: cd /opt/hadoop-2.2.0
 $: ./bin/start-all.sh
 ```
 
