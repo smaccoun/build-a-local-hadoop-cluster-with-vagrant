@@ -14,8 +14,8 @@ $: vagrant up
 # Now log in and start hadoop
 $: vagrant ssh master
 $: sudo su -
-$: cd /opt/hadoop-2.2.0
-$: ./bin/start-all.sh
+$: cd /opt/hadoop-2.2.0/sbin
+$: sudo ./bin/start-all.sh
 ```
 
 This is the first of a series of tutorials. This one gives you an introduction to vagrant and puppet, as well as
@@ -364,8 +364,8 @@ $: vagrant up
 # Now log in and start hadoop
 $: vagrant ssh master
 $: sudo su -
-$: cd /opt/hadoop-2.2.0
-$: ./bin/start-all.sh
+$: cd /opt/hadoop-2.2.0/sbin
+$: sudo ./bin/start-all.sh
 ```
 
 If you want to ssh into any other nodes to see their workings, just use `vagrant ssh hadoop<#>`.
